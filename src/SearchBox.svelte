@@ -8,7 +8,7 @@
         Col,
         Row,
     } from "sveltestrap";
-    import queryString from "query-string";
+    import { stringifyUrl } from "query-string";
     import Select from "svelte-select";
 
     import { allLanguages, allTypes } from "./common";
@@ -31,7 +31,7 @@
             qs.type = searchOptions.types.map((el) => el.value);
         }
 
-        let req = queryString.stringifyUrl({ url: "/search", query: qs });
+        let req = stringifyUrl({ url: "/search", query: qs });
         window.location.assign("#" + req);
     }
 

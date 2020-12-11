@@ -215,14 +215,18 @@ export function formatLinkText(url: string) {
         /^https:\/\/([^.]+)\.wikipedia\.org\/wiki\/(.+)$/
     );
     if (match) {
-        return `${match[1]}:${match[2]}`;
+        const lang = match[1];
+        const name = decodeURIComponent(match[2]).replace("_", " ");
+        return `${lang}:${name}`;
     }
 
     match = url.match(
         /^https:\/\/zh\.wikipedia\.org\/(zh-cn|zh-tw)\/(.+)$/
     );
     if (match) {
-        return `${match[1]}:${match[2]}`;
+        const lang = match[1];
+        const name = decodeURIComponent(match[2]).replace("_", " ");
+        return `${lang}:${name}`;
     }
 
     return url;
