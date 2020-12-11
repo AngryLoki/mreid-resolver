@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="64" height="64" version="1.1" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <style type="text/css">@import url('https://fonts.googleapis.com/css?family=Asap+Condensed');</style>
+ </defs>
+ <rect x="1.75" y="1.75" width="96.5" height="96.5" rx="19" ry="19" fill="#345"/>
+ <g transform="translate(0 1.271)" dominant-baseline="central" fill="#fff" aria-label="MR">
+  <path d="m14.01 28.07h7.496l9.488 25.3 9.538-25.3h7.496v37.18h-4.906v-32.65l-9.587 25.5h-5.055l-9.587-25.5v32.65h-4.881z" dominant-baseline="central"/>
+  <path d="m75.67 47.82q1.619 0.5479 3.138 2.341 1.544 1.793 3.088 4.931l5.105 10.16h-5.404l-4.756-9.538q-1.843-3.735-3.586-4.956-1.718-1.22-4.707-1.22h-5.479v15.71h-5.03v-37.18h11.36q6.375 0 9.513 2.665 3.138 2.665 3.138 8.043 0 3.511-1.644 5.827-1.619 2.316-4.731 3.212zm-12.6-15.61v13.2h6.325q3.636 0 5.479-1.668 1.868-1.693 1.868-4.956t-1.868-4.906q-1.843-1.668-5.479-1.668z" dominant-baseline="central"/>
+ </g>
+ <rect x="1.75" y="1.75" width="96.5" height="96.5" rx="19" ry="19" fill-opacity="0" stroke="#010101" stroke-width="3.5"/>
+</svg>
