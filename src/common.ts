@@ -73,11 +73,12 @@ export const allTypes = [
     { value: "ProductModel", label: "Product model" },
     { value: "SoftwareApplication", label: "Software application" },
     { value: "SportsTeam", label: "Sports team" },
-    { value: "TouristAttraction", label: "TouristAttraction" },
+    { value: "TouristAttraction", label: "Tourist attraction" },
     { value: "TVEpisode", label: "TV episode" },
     { value: "TVSeries", label: "TV series" },
     { value: "VideoGame", label: "Video game" },
     { value: "VideoGameSeries", label: "Video game series" },
+    { value: "VisualArtwork", label: "Visual artwork" },
     { value: "WebSite", label: "Website" },
 ];
 
@@ -216,7 +217,7 @@ export function formatLinkText(url: string) {
     );
     if (match) {
         const lang = match[1];
-        const name = decodeURIComponent(match[2]).replace("_", " ");
+        const name = decodeURIComponent(match[2]).replace(/_/g, " ");
         return `${lang}:${name}`;
     }
 
@@ -225,7 +226,7 @@ export function formatLinkText(url: string) {
     );
     if (match) {
         const lang = match[1];
-        const name = decodeURIComponent(match[2]).replace("_", " ");
+        const name = decodeURIComponent(match[2]).replace(/_/g, " ");
         return `${lang}:${name}`;
     }
 

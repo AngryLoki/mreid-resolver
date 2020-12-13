@@ -102,10 +102,12 @@
             })
         );
 
+        const type = item.type.sort();
+
         const output = {
             kgid: item.id,
-            type: item.type,
-            image: image,
+            type,
+            image,
             url: item.url,
             item_data: sorted_items,
         };
@@ -229,7 +231,7 @@
         <Table size="sm">
             <tbody>
                 {#each [...content.item_data] as [lang, item]}
-                    <tr>
+                    <tr lang={lang}>
                         <td>
                             <a
                                 class:font-weight-bold={lang == 'en'}
