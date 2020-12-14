@@ -8,6 +8,7 @@
         queryEntitiesApi,
         formatLinkText,
         queryWikidata,
+        getWikidataItemsForLinks,
     } from "./common";
     import type { SearchOptions } from "./common";
 
@@ -37,7 +38,15 @@
 
     let searchResults: Promise<SearchItem[]> = undefined;
 
+    type QuickStatement = { qid: string; prop: string; value: string };
+    type WikidataResults = {
+        wikilinksToWikidata: Record<string, Set<string>>;
+        newStatements: QuickStatement[];
+    };
+    let wikidataResults: Promise<WikidataResults> = undefined;
+
     $: searchResults = search(searchOptions);
+    $: wikidataResults = fetchWikidata(searchResults);
 
     async function search({
         query,
@@ -164,6 +173,69 @@
         return items;
     }
 
+    async function fetchWikidata(itemsPromise: Promise<SearchItem[]>) {
+        const items = await itemsPromise;
+        const wikilinks = items.map((el) => el.wikipedia).filter((el) => !!el);
+        const wikidataItems = await getWikidataItemsForLinks(wikilinks);
+
+        const wdWikilinks = new Set(wikidataItems.map((el) => el.article));
+        const notMapped = wikilinks.filter((el) => !wdWikilinks.has(el));
+        if (notMapped.length) {
+            console.warn(`Not mapped: ${notMapped}`);
+        }
+
+        let wikilinksToWikidata: Record<string, Set<string>> = {};
+        for (const item of wikidataItems) {
+            if (!(item.article in wikilinksToWikidata)) {
+                wikilinksToWikidata[item.article] = new Set([item.item]);
+            } else {
+                wikilinksToWikidata[item.article].add(item.item);
+            }
+        }
+
+        // calculate missing statements
+        const wikidataItemsMreids: Record<string, Set<string>> = {};
+        for (const item of wikidataItems) {
+            if (item.mreid) {
+                if (!(item.item in wikilinksToWikidata)) {
+                    wikidataItemsMreids[item.item] = new Set([item.mreid]);
+                } else {
+                    wikidataItemsMreids[item.item].add(item.mreid);
+                }
+            } else {
+                wikidataItemsMreids[item.item] = new Set();
+            }
+        }
+
+        let newStatements: QuickStatement[] = [];
+
+        for (const item of items) {
+            if (item.wikipedia && wikilinksToWikidata[item.wikipedia]) {
+                for (const wikidataUri of wikilinksToWikidata[item.wikipedia]) {
+                    if (
+                        wikidataItemsMreids[wikidataUri] &&
+                        !wikidataItemsMreids[wikidataUri].has(item.id)
+                    ) {
+                        const qid = wikidataUri.match(
+                            /^http:\/\/www\.wikidata\.org\/entity\/(.+)$/
+                        )?.[1];
+                        if (!qid) {
+                            console.warn(
+                                `Unable to extract qid from url: ${wikidataUri}`
+                            );
+                            continue;
+                        }
+                        const prop = item.id.startsWith("/m/")
+                            ? "P646"
+                            : "P2671";
+                        newStatements.push({ qid, prop, value: item.id });
+                    }
+                }
+            }
+        }
+        return { wikilinksToWikidata, newStatements };
+    }
+
     const copy = (text: string) => {
         const app = new CopyClipboard({
             target: document.getElementById("clipboard"),
@@ -171,6 +243,16 @@
         });
         app.$destroy();
     };
+
+    function quickStatementsLink(statements: QuickStatement[]) {
+        const edits = statements
+            .map((el) => `${el.qid}|${el.prop}|"${el.value}"`)
+            .join("||");
+        return (
+            "https://quickstatements.toolforge.org/#/v1=" +
+            encodeURIComponent(edits)
+        );
+    }
 </script>
 
 <style>
@@ -199,6 +281,25 @@
             {:else if items.length == 1}
                 Found 1 result
             {:else}There are no results for {searchOptions.query}{/if}
+            {#if getWikidataItemsForLinks.length > 0}
+                {#await wikidataResults}
+                    <Spinner size="sm" />
+                {:then { newStatements }}
+                    {#if newStatements.length}
+                        and
+                        <a
+                            href={quickStatementsLink(newStatements)}
+                            title="Open in QuickStatements">
+                            {newStatements.length}
+                            new statement{newStatements.length != 1 ? 's' : ''}
+                            <img
+                                style="margin-bottom: 5px;"
+                                src="qs.png"
+                                alt="QuickStatements" />
+                        </a>
+                    {:else}and 0 new statements{/if}
+                {/await}
+            {/if}
         </div>
 
         {#each items as item}

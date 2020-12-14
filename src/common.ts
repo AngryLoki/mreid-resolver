@@ -187,7 +187,7 @@ export async function queryEntitiesApi(
                         inLanguage: el.inLanguage,
                         articleBody: cleanup(el.articleBody),
                         license: el.license,
-                        url: el.url
+                        url: el.url.replace(/'/g, '%27')
                     };
                 });
             } else {
@@ -195,8 +195,8 @@ export async function queryEntitiesApi(
                     inLanguage: defaultLanguage,
                     articleBody: cleanup(result.detailedDescription.articleBody),
                     license: result.detailedDescription.license,
-                    url: result.detailedDescription.url
-                }]
+                    url: result.detailedDescription.url.replace(/'/g, '%27')
+                }];
             }
         }
 
@@ -211,23 +211,26 @@ export async function queryEntitiesApi(
 }
 
 export function formatLinkText(url: string) {
-    url = decodeURI(url);
-    let match = url.match(
-        /^https:\/\/([^.]+)\.wikipedia\.org\/wiki\/(.+)$/
-    );
-    if (match) {
-        const lang = match[1];
-        const name = decodeURIComponent(match[2]).replace(/_/g, " ");
-        return `${lang}:${name}`;
-    }
+    try {
+        let match = url.match(
+            /^https:\/\/([^.]+)\.wikipedia\.org\/wiki\/(.+)$/
+        );
+        if (match) {
+            const lang = match[1];
+            const name = decodeURIComponent(match[2]).replace(/_/g, " ");
+            return `${lang}:${name}`;
+        }
 
-    match = url.match(
-        /^https:\/\/zh\.wikipedia\.org\/(zh-cn|zh-tw)\/(.+)$/
-    );
-    if (match) {
-        const lang = match[1];
-        const name = decodeURIComponent(match[2]).replace(/_/g, " ");
-        return `${lang}:${name}`;
+        match = url.match(
+            /^https:\/\/zh\.wikipedia\.org\/(zh-cn|zh-tw)\/(.+)$/
+        );
+        if (match) {
+            const lang = match[1];
+            const name = decodeURIComponent(match[2]).replace(/_/g, " ");
+            return `${lang}:${name}`;
+        }
+    } catch (e) {
+        console.warn(`Unable to parse url ${url} - ${e}`);
     }
 
     return url;
@@ -251,4 +254,21 @@ export async function queryWikidata(query: string) {
     const response_body = await response.json();
     const bindings: Record<string, { type: string, value: string }>[] = response_body["results"]["bindings"];
     return bindings;
+}
+
+export async function getWikidataItemsForLinks(links: string[]) {
+    if (!links.length) {
+        return [];
+    }
+
+    const articles = links.map(el => '<' + el + '>').join(' ');
+    const query = `SELECT * WHERE {
+        VALUES ?article {${articles}}
+        ?article schema:about ?item .
+        OPTIONAL { ?item wdt:P646|wdt:P2671 ?mreid }
+      }`
+    const results = await queryWikidata(query);
+    return results.map(({ article, item, mreid }) => {
+        return { article: article.value, item: item.value, mreid: mreid?.value };
+    });
 }
