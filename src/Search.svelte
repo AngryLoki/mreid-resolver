@@ -9,6 +9,7 @@
         formatLinkText,
         queryWikidata,
         getWikidataItemsForLinks,
+filterExistingMreids,
     } from "./common";
     import type { SearchOptions } from "./common";
 
@@ -137,36 +138,7 @@
         }
 
         if (withWikidata && items.length) {
-            const mreids = items.map((el) => el.id);
-            const gIds = mreids.filter((el) => el.startsWith("/g/"));
-            const mIds = mreids.filter((el) => el.startsWith("/m/"));
-
-            let queryParts: string[] = [];
-
-            if (gIds.length) {
-                queryParts.push(
-                    `{VALUES ?id {${gIds
-                        .map((el) => `"${el}"`)
-                        .join(" ")}} ?item wdt:P2671 ?id}`
-                );
-            }
-
-            if (mIds.length) {
-                queryParts.push(
-                    `{VALUES ?id {${mIds
-                        .map((el) => `"${el}"`)
-                        .join(" ")}} ?item wdt:P646 ?id}`
-                );
-            }
-
-            let query: string;
-            if (queryParts.length == 2) {
-                query = `SELECT ?id WHERE {${queryParts[0]} UNION ${queryParts[1]}}`;
-            } else {
-                query = `SELECT ?id WHERE ${queryParts[0]}`;
-            }
-            const wdItems = await queryWikidata(query);
-            const wdMreids = new Set(wdItems.map((el) => el.id.value));
+            const wdMreids = await filterExistingMreids(items.map((el) => el.id));
             items = items.filter((el) => wdMreids.has(el.id));
         }
 
@@ -181,7 +153,7 @@
         const wdWikilinks = new Set(wikidataItems.map((el) => el.article));
         const notMapped = wikilinks.filter((el) => !wdWikilinks.has(el));
         if (notMapped.length) {
-            console.warn(`Not mapped: ${notMapped}`);
+            console.warn(`Not mapped ${notMapped.length} links:`, notMapped.join('\n'));
         }
 
         let wikilinksToWikidata: Record<string, Set<string>> = {};
@@ -233,6 +205,12 @@
                 }
             }
         }
+
+        // enforce unique constraint
+        const insertableMreids = new Set(newStatements.map((el) => el.value));
+        const existingMreids = await filterExistingMreids([...insertableMreids]);
+        newStatements = newStatements.filter(el => !existingMreids.has(el.value))
+
         return { wikilinksToWikidata, newStatements };
     }
 
@@ -256,10 +234,6 @@
 </script>
 
 <style>
-    .stats {
-        float: right;
-    }
-
     .search-headline {
         display: flex;
         align-items: center;
@@ -271,7 +245,7 @@
     {#await searchResults}
         <Spinner />
     {:then items}
-        <div class="small mb-2 text-muted stats">
+        <div class="small mb-2 text-muted float-md-right">
             {#if items.length == 500}
                 Found more than 500 results
             {:else if items.length > 1}
@@ -289,6 +263,7 @@
                         and
                         <a
                             href={quickStatementsLink(newStatements)}
+                            target="blank"
                             title="Open in QuickStatements">
                             {newStatements.length}
                             new statement{newStatements.length != 1 ? 's' : ''}
@@ -317,17 +292,17 @@
                         class="btn btn-light mark text-muted py-0 px-2"
                         title="Copy to clipboard"
                         on:click={() => copy(item.id)}>
-                        <small> {item.id} 📋</small>
+                        <small class="text-nowrap">{item.id} 📋</small>
                     </button>
                     <a
-                        class="btn btn-light mark text-muted py-0 px-1 ml-2"
+                        class="btn btn-light mark text-muted py-0 px-1 ml-1"
                         title="Search in Google"
                         href={`https://www.google.com/search?kgmid=${item.id}&hl=${item.name?.lang || 'en'}&gl=US`}>
                         <small>🔍</small>
                     </a>
                     {#if item.url}
                         <a
-                            class="btn btn-light mark text-muted py-0 px-1 ml-2"
+                            class="btn btn-light mark text-muted py-0 px-1 ml-1"
                             title="The official website URL of the entity"
                             href={item.url}>
                             <small>🌐</small>
@@ -336,7 +311,7 @@
 
                     {#if item.description}
                         <small
-                            class="ml-2 text-muted"
+                            class="ml-1 text-muted text-nowrap"
                             lang={item.description.lang}>
                             {item.description.text}
                         </small>
@@ -354,7 +329,7 @@
                     {/if}
                     {#if item.wikipedia}
                         <small class="text-nowrap">
-                            <a href={item.wikipedia}>&rarr;
+                            <a href={item.wikipedia}>→
                                 {formatLinkText(item.wikipedia)}
                             </a>
                         </small>

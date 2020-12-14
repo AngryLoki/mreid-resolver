@@ -244,7 +244,7 @@
                             {#if item.detailed_description?.url}
                                 <small class="text-nowrap">
                                     <a
-                                        href={item.detailed_description.url}>&rarr;
+                                        href={item.detailed_description.url}>→
                                         {formatLinkText(item.detailed_description.url)}
                                     </a></small>
                             {/if}

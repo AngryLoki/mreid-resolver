@@ -117,9 +117,15 @@ type EntitySearchResult = {
     image?: { contentUrl: string, url: string, license: string };
 };
 
-export async function queryEntitiesApi(
-    { query, ids, languages, types, limit }: { query?: string, ids?: string[], languages?: string[], types?: string[], limit?: number }
-) {
+type QueryEntitiesApiOptions = {
+    query?: string,
+    ids?: string[],
+    languages?: string[],
+    types?: string[],
+    limit?: number
+};
+
+export async function queryEntitiesApi({ query, ids, languages, types, limit }: QueryEntitiesApiOptions) {
     let params = [["key", api_key]];
     if (query?.length) {
         params.push(["query", query])
@@ -262,13 +268,50 @@ export async function getWikidataItemsForLinks(links: string[]) {
     }
 
     const articles = links.map(el => '<' + el + '>').join(' ');
-    const query = `SELECT * WHERE {
-        VALUES ?article {${articles}}
+    const query = `SELECT DISTINCT ?article ?item ?mreid WHERE {
+        VALUES ?article {${articles}} .
         ?article schema:about ?item .
         OPTIONAL { ?item wdt:P646|wdt:P2671 ?mreid }
+        # MINUS { ?item wdt:P31 wd:Q4167410 }
       }`
     const results = await queryWikidata(query);
     return results.map(({ article, item, mreid }) => {
         return { article: article.value, item: item.value, mreid: mreid?.value };
     });
+}
+
+export async function filterExistingMreids(mreids: string[]) {
+    if (!mreids.length) {
+        return new Set();
+    }
+
+    const gIds = mreids.filter((el) => el.startsWith("/g/"));
+    const mIds = mreids.filter((el) => el.startsWith("/m/"));
+
+    let queryParts: string[] = [];
+
+    if (gIds.length) {
+        queryParts.push(
+            `{VALUES ?id {${gIds
+                .map((el) => `"${el}"`)
+                .join(" ")}} ?item wdt:P2671 ?id}`
+        );
+    }
+
+    if (mIds.length) {
+        queryParts.push(
+            `{VALUES ?id {${mIds
+                .map((el) => `"${el}"`)
+                .join(" ")}} ?item wdt:P646 ?id}`
+        );
+    }
+
+    let query: string;
+    if (queryParts.length == 2) {
+        query = `SELECT ?id WHERE {${queryParts[0]} UNION ${queryParts[1]}}`;
+    } else {
+        query = `SELECT ?id WHERE ${queryParts[0]}`;
+    }
+    const wdItems = await queryWikidata(query);
+    return new Set(wdItems.map((el) => el.id.value));
 }

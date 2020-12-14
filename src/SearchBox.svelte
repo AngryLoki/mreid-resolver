@@ -114,48 +114,44 @@
             </InputGroup>
         </Col>
     </Row>
-    <Row class="mt-2 mb-3 form-row">
-        <Col class="list-inline">
-            <div class="list-inline-item form-check form-check-inline">
-                <Label check size="sm">
-                    <Input
-                        type="checkbox"
-                        bind:checked={searchOptions.withWikipedia} />With
-                    Wikipedia
-                </Label>
-            </div>
-            <div class="list-inline-item form-check form-check-inline">
-                <Label check size="sm">
-                    <Input
-                        type="checkbox"
-                        bind:checked={searchOptions.withWikidata} />With
-                    Wikidata
-                </Label>
-            </div>
-            <div class="list-inline-item dropdown-select">
-                <Select
-                    showChevron={true}
-                    showIndicator={true}
-                    isClearable={false}
-                    isMulti={true}
-                    containerClasses="form-control form-control-sm"
-                    placeholder="Any language"
-                    listPlacement="bottom"
-                    items={search_languages_dropdown_items}
-                    bind:selectedValue={searchOptions.languages} />
-            </div>
-            <div class="list-inline-item dropdown-select">
-                <Select
-                    showChevron={true}
-                    showIndicator={true}
-                    isClearable={false}
-                    isMulti={true}
-                    containerClasses="form-control form-control-sm"
-                    placeholder="Any type"
-                    listPlacement="bottom"
-                    items={allTypes}
-                    bind:selectedValue={searchOptions.types} />
-            </div>
-        </Col>
+    <Row class="mt-2 mb-3 form-row list-inline">
+        <div class="col-md-auto list-inline-item form-check form-check-inline">
+            <Label check size="sm">
+                <Input
+                    type="checkbox"
+                    bind:checked={searchOptions.withWikipedia} />With Wikipedia
+            </Label>
+        </div>
+        <div class="col-md-auto list-inline-item form-check form-check-inline">
+            <Label check size="sm">
+                <Input
+                    type="checkbox"
+                    bind:checked={searchOptions.withWikidata} />With Wikidata
+            </Label>
+        </div>
+        <div class="col-md-auto list-inline-item dropdown-select">
+            <Select
+                showChevron={true}
+                showIndicator={true}
+                isClearable={false}
+                isMulti={true}
+                containerClasses="form-control form-control-sm"
+                placeholder="Any language"
+                listPlacement="bottom"
+                items={search_languages_dropdown_items}
+                bind:selectedValue={searchOptions.languages} />
+        </div>
+        <div class="col-md-auto list-inline-item dropdown-select">
+            <Select
+                showChevron={true}
+                showIndicator={true}
+                isClearable={false}
+                isMulti={true}
+                containerClasses="form-control form-control-sm"
+                placeholder="Any type"
+                listPlacement="bottom"
+                items={allTypes}
+                bind:selectedValue={searchOptions.types} />
+        </div>
     </Row>
 </form>
