@@ -1,8 +1,10 @@
-<script lang="ts">
-    import { Jumbotron } from "sveltestrap";
-</script>
+<style>
+    #welcome {
+        background: #fff;
+    }
+</style>
 
-<Jumbotron>
+<div class="jumbotron rounded" id="welcome">
     <h1 class="display-4">Machine-Readable Entity IDs resolver</h1>
     <p class="lead">
         A simple UI on top of
@@ -27,4 +29,15 @@
             example of Freebase entry missing in Freebase dump
         </li>
     </ul>
-</Jumbotron>
+    <p class="mb-1">
+        The source code under <a
+            href="https://github.com/AngryLoki/mreid-resolver/blob/master/LICENSE"
+            >MIT Licence</a
+        >
+        is available on
+        <a href="https://github.com/AngryLoki/mreid-resolver">GitHub</a>. Please
+        <a href="https://github.com/AngryLoki/mreid-resolver/issues"
+            >report bugs there</a
+        >.
+    </p>
+</div>

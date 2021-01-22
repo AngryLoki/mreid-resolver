@@ -5,6 +5,7 @@
     import { allLanguages, queryEntitiesApi, formatLinkText } from "./common";
 
     export let kgid: string;
+    let main_lang: string = null;
 
     type LangData = {
         name?: string;
@@ -112,6 +113,11 @@
             item_data: sorted_items,
         };
 
+        for (const key of sorted_items.keys()) {
+            main_lang = key;
+            break;
+        }
+
         return output;
     }
 
@@ -124,138 +130,205 @@
     };
 </script>
 
-<style>
-</style>
+<div class="row mx-0">
+    <div class="col-md-7 rounded" id="item">
+        <Row class="mt-3">
+            <Col class="col-sm">
+                {#await content then content}
+                    {#if content?.image}
+                        <a href={content.image.url}>
+                            <img
+                                src={content.image.src}
+                                alt={kgid}
+                                class="img-thumbnail rounded float-right mb-1"
+                            />
+                        </a>
+                    {/if}
+                {/await}
 
-<Row class="mt-3">
-    <Col class="col-sm">
-        {#await content then content}
-            {#if content?.image}
-                <a href={content.image.url}>
-                    <img
-                        src={content.image.src}
-                        alt={kgid}
-                        class="img-thumbnail rounded float-right mb-1" />
-                </a>
-            {/if}
-        {/await}
+                <h3>
+                    Entry
+                    {kgid}
+                    <button
+                        type="button"
+                        class="btn btn-light btn-sm"
+                        title="Copy to clipboard"
+                        on:click={copy}>📋</button
+                    >
+                </h3>
 
-        <h3>
-            Entry
-            {kgid}
-            <button
-                type="button"
-                class="btn btn-light btn-sm"
-                title="Copy to clipboard"
-                on:click={copy}>📋</button>
-        </h3>
-
-        <Row class="my-3">
-            <Col sm="2">Search in Google:</Col>
-            <Col sm="10">
-                <ul class="list-inline">
-                    <li class="list-inline-item">
-                        <a
-                            href={'https://www.google.com/search?kgmid=' + kgid + '&hl=en&gl=US'}>US</a>
-                    </li>
-                    <li class="list-inline-item">
-                        <a
-                            href={'https://www.google.com/search?kgmid=' + kgid + '&hl=en&gl=IN'}>IN</a>
-                    </li>
-                    <li class="list-inline-item">
-                        <a
-                            href={'https://www.google.com/search?kgmid=' + kgid + '&hl=en&gl=ID'}>ID</a>
-                    </li>
-                    <li class="list-inline-item">
-                        <a
-                            href={'https://www.google.com/search?kgmid=' + kgid + '&hl=en&gl=KR'}>KR</a>
-                    </li>
-                </ul>
-            </Col>
-
-            <Col sm="2">Google Trends:</Col>
-            <Col sm="10">
-                <ul class="list-inline">
-                    <li class="list-inline-item">
-                        <a
-                            href={`https://trends.google.com/trends/explore?q=${kgid}`}>Worldwide</a>
-                    </li>
-                    <li class="list-inline-item">
-                        <a
-                            href={`https://trends.google.com/trends/explore?q=${kgid}&geo=US`}>US</a>
-                    </li>
-                </ul>
-            </Col>
-
-            {#await content then content}
-                {#if content.type}
-                    <Col sm="2">schema.org types:</Col>
-                    <Col sm="10">
+                <Row class="my-3">
+                    <Col sm="4">Search in Google:</Col>
+                    <Col sm="8">
                         <ul class="list-inline">
-                            {#each content.type as type, i}
-                                <li class="list-inline-item">
-                                    <a
-                                        href={'https://schema.org/' + type}>{type}</a>
-                                </li>
-                            {/each}
+                            <li class="list-inline-item">
+                                <a
+                                    href={"https://www.google.com/search?kgmid=" +
+                                        kgid +
+                                        "&hl=en&gl=US"}>US</a
+                                >
+                            </li>
+                            <li class="list-inline-item">
+                                <a
+                                    href={"https://www.google.com/search?kgmid=" +
+                                        kgid +
+                                        "&hl=en&gl=IN"}>IN</a
+                                >
+                            </li>
+                            <li class="list-inline-item">
+                                <a
+                                    href={"https://www.google.com/search?kgmid=" +
+                                        kgid +
+                                        "&hl=en&gl=ID"}>ID</a
+                                >
+                            </li>
+                            <li class="list-inline-item">
+                                <a
+                                    href={"https://www.google.com/search?kgmid=" +
+                                        kgid +
+                                        "&hl=en&gl=KR"}>KR</a
+                                >
+                            </li>
                         </ul>
                     </Col>
-                {/if}
 
-                {#if content.url}
-                    <Col sm="2">Official website:</Col>
-                    <Col sm="10"><a href={content.url}>{content.url}</a></Col>
-                {/if}
-            {/await}
+                    <Col sm="4">Google Trends:</Col>
+                    <Col sm="8">
+                        <ul class="list-inline">
+                            <li class="list-inline-item">
+                                <a
+                                    href={`https://trends.google.com/trends/explore?q=${kgid}`}
+                                    >Worldwide</a
+                                >
+                            </li>
+                            <li class="list-inline-item">
+                                <a
+                                    href={`https://trends.google.com/trends/explore?q=${kgid}&geo=US`}
+                                    >US</a
+                                >
+                            </li>
+                        </ul>
+                    </Col>
+
+                    {#await content then content}
+                        {#if content?.type}
+                            <Col sm="4">schema.org types:</Col>
+                            <Col sm="8">
+                                <ul class="list-inline">
+                                    {#each content.type as type, i}
+                                        <li class="list-inline-item">
+                                            <a
+                                                href={"https://schema.org/" +
+                                                    type}>{type}</a
+                                            >
+                                        </li>
+                                    {/each}
+                                </ul>
+                            </Col>
+                        {/if}
+
+                        {#if content?.url}
+                            <Col sm="4">Official website:</Col>
+                            <Col sm="8"
+                                ><a href={content.url}>{content.url}</a></Col
+                            >
+                        {/if}
+                    {/await}
+                </Row>
+            </Col>
         </Row>
-    </Col>
-</Row>
 
-{#await content}
-    <Spinner />
-{:then content}
-    {#if !content}
-        <div class="alert alert-warning" role="alert">
-            No data returned from
-            <a
-                href="https://developers.google.com/knowledge-graph/reference/rest/v1">entities.search</a>
-            method. Some data might be available in
-            <a
-                href={'https://www.google.com/search?kgmid=' + kgid + '&hl=en'}>Google</a>.
-        </div>
-    {:else}
-        <small class="text-muted">
-            Note: some links to Google Search may not work.
-        </small>
+        {#await content}
+            <Spinner />
+        {:then content}
+            {#if !content}
+                <div class="alert alert-warning" role="alert">
+                    No data returned from
+                    <a
+                        href="https://developers.google.com/knowledge-graph/reference/rest/v1"
+                        >entities.search</a
+                    >
+                    method. Some data might be available in
+                    <a
+                        href={"https://www.google.com/search?kgmid=" +
+                            kgid +
+                            "&hl=en"}>Google</a
+                    >.
+                </div>
+            {:else}
+                <small class="text-muted">
+                    Note: some links to Google Search may not work.
+                </small>
 
-        <Table size="sm">
-            <tbody>
-                {#each [...content.item_data] as [lang, item]}
-                    <tr lang={lang}>
-                        <td>
-                            <a
-                                class:font-weight-bold={lang == 'en'}
-                                href={'https://www.google.com/search?kgmid=' + kgid + '&hl=' + lang}>{lang}</a>
-                        </td>
-                        <td>{item.name || ''}</td>
-                        <td>{item.description || ''}</td>
-                        <td>
-                            {item.detailed_description?.text || ''}
-                            {#if item.detailed_description?.url}
-                                <small class="text-nowrap">
+                <Table size="sm">
+                    <tbody>
+                        {#each [...content.item_data] as [lang, item]}
+                            <tr {lang}>
+                                <td>
                                     <a
-                                        href={item.detailed_description.url}>→
-                                        {formatLinkText(item.detailed_description.url)}
-                                    </a></small>
-                            {/if}
-                        </td>
-                    </tr>
-                {/each}
-            </tbody>
-        </Table>
+                                        class:font-weight-bold={lang == "en"}
+                                        href={"https://www.google.com/search?kgmid=" +
+                                            kgid +
+                                            "&hl=" +
+                                            lang}>{lang}</a
+                                    >
+                                </td>
+                                <td>{item.name || ""}</td>
+                                <td>{item.description || ""}</td>
+                                <td>
+                                    {item.detailed_description?.text || ""}
+                                    {#if item.detailed_description?.url}
+                                        <small class="text-nowrap">
+                                            <a
+                                                href={item.detailed_description
+                                                    .url}
+                                                >→
+                                                {formatLinkText(
+                                                    item.detailed_description
+                                                        .url
+                                                )}
+                                            </a></small
+                                        >
+                                    {/if}
+                                </td>
+                            </tr>
+                        {/each}
+                    </tbody>
+                </Table>
+                <div id="clipboard" />
+            {/if}
+        {:catch error}
+            <p style="color: red">{error.message}</p>
+        {/await}
+    </div>
+    <div class="col-md-5">
+        {#if main_lang}
+            <iframe
+                id="search-frame"
+                class="rounded"
+                title="Search for {kgid} in Google"
+                src="https://www.google.com/search?kgmid={kgid}&hl={main_lang}&amp;gl=US&ie=utf-8&oe=utf-8&pws=0&adtest=on&adtest-useragent=Mozilla%2F5.0%20(iPhone%3B%20CPU%20iPhone%20OS%2011_1%20like%20Mac%20OS%20X)%20AppleWebKit%2F604.1.34%20(KHTML%2C%20like%20Gecko)%20GSA%2F39.0.175034278%20Mobile%2F15B93%20Safari%2F604.1&ip=0.0.0.0&source_ip=0.0.0.0&igu=1"
+            />
+        {/if}
+    </div>
+</div>
+
+{#await content then content}
+    {#if content}
         <Footer />
-        <div id="clipboard" />
     {/if}
-{:catch error}
-    <p style="color: red">{error.message}</p>
 {/await}
+
+<style>
+    #item {
+        background: #fff;
+    }
+
+    #search-frame {
+        height: 100%;
+        min-height: 500px;
+        width: 100%;
+        border-width: 0px;
+        margin-top: -10px;
+    }
+</style>

@@ -7,7 +7,6 @@
         allLanguages,
         queryEntitiesApi,
         formatLinkText,
-        queryWikidata,
         getWikidataItemsForLinks,
 filterExistingMreids,
     } from "./common";
@@ -234,6 +233,9 @@ filterExistingMreids,
 </script>
 
 <style>
+    #search-table {
+        background: #fff;
+    }
     .search-headline {
         display: flex;
         align-items: center;
@@ -241,7 +243,7 @@ filterExistingMreids,
     }
 </style>
 
-<div>
+<div id="search-table" class="p-3 rounded">
     {#await searchResults}
         <Spinner />
     {:then items}

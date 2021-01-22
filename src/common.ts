@@ -73,6 +73,7 @@ export const allTypes = [
     { value: "ProductModel", label: "Product model" },
     { value: "SoftwareApplication", label: "Software application" },
     { value: "SportsTeam", label: "Sports team" },
+    { value: "Thing", label: "Thing" },
     { value: "TouristAttraction", label: "Tourist attraction" },
     { value: "TVEpisode", label: "TV episode" },
     { value: "TVSeries", label: "TV series" },
