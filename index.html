@@ -17,6 +17,21 @@
 </head>
 
 <body>
+	<main id="ie" class="container" style="display: none">
+		<div class="alert alert-danger mt-4" role="alert">
+			<h4 class="alert-heading">Your browser is not supported</h4>
+			Due to limited capabilities, Internet Explorer is not supported by Machine-Readable Entity IDs resolver.
+			Please use Mozilla Firefox, Google Chrome, Microsoft Edge or any other modern browser.
+		</div>
+	</main>
+	<script>
+		document.addEventListener("DOMContentLoaded", function (event) {
+			if (window.document.documentMode) {
+				document.getElementById("ie").style.display = "inherit";
+				console.log("xxx");
+			}
+		});
+	</script>
 </body>
 
 </html>
