@@ -3,6 +3,7 @@
     import CopyClipboard from "./CopyClipboard.svelte";
     import Footer from "./Footer.svelte";
     import { allLanguages, queryEntitiesApi, formatLinkText } from "./common";
+    import { buildTopicId } from "./google_news";
 
     export let kgid: string;
     let main_lang: string = null;
@@ -205,6 +206,20 @@
                                 <a
                                     href={`https://trends.google.com/trends/explore?q=${kgid}&geo=US`}
                                     >US</a
+                                >
+                            </li>
+                        </ul>
+                    </Col>
+
+                    <Col sm="4">Google News:</Col>
+                    <Col sm="8">
+                        <ul class="list-inline">
+                            <li class="list-inline-item">
+                                <a
+                                    href="https://news.google.com/topics/{buildTopicId(
+                                        kgid,
+                                        'en'
+                                    )}?hl=en-US&gl=US&ceid=US:en">English</a
                                 >
                             </li>
                         </ul>
