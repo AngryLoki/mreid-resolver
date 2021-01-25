@@ -322,7 +322,7 @@
                 id="search-frame"
                 class="rounded"
                 title="Search for {kgid} in Google"
-                src="https://www.google.com/search?kgmid={kgid}&hl={main_lang}&amp;gl=US&ie=utf-8&oe=utf-8&pws=0&adtest=on&adtest-useragent=Mozilla%2F5.0%20(iPhone%3B%20CPU%20iPhone%20OS%2011_1%20like%20Mac%20OS%20X)%20AppleWebKit%2F604.1.34%20(KHTML%2C%20like%20Gecko)%20GSA%2F39.0.175034278%20Mobile%2F15B93%20Safari%2F604.1&ip=0.0.0.0&source_ip=0.0.0.0&igu=1"
+                src="https://www.google.com/search?prvw=AP1HcD1TvBAuAZZqq5dYyslxOHow&kgmid={kgid}&hl={main_lang}&gl=US&q=previewid%3A5a5c1869-ef41-46c2-a38d-1b2dbd3234a4&useragent=Mozilla%2F5.0%20(iPhone%3B%20CPU%20iPhone%20OS%2011_1%20like%20Mac%20OS%20X)%20AppleWebKit%2F604.1.34%20(KHTML%2C%20like%20Gecko)%20GSA%2F39.0.175034278%20Mobile%2F15B93%20Safari%2F604.1&filter=0&gws_rd=cr&newwindow=1&igu=1"
             />
         {/if}
     </div>
