@@ -29,33 +29,25 @@ export function buildTopicId(mreid: string, lang: string) {
         ...asField(1, LENGTH_DELIMITED, asString(enc.encode(mreid))),
         ...asField(2, LENGTH_DELIMITED, asString(enc.encode(lang)))
     ]);
-    console.log(entity_meta);
-    
 
     const entity = new Uint8Array([
         ...asField(1, VARINT, asVarint(16)),
         ...asField(2, LENGTH_DELIMITED, asString(entity_meta)),
         ...asField(5, VARINT, asVarint(0))
     ])
-    console.log(entity);
 
     const entity_b64 = encodeBase64Nopad(entity);
-    console.log(entity_b64);
-
 
     const topic_meta = new Uint8Array([
         ...asField(1, VARINT, asVarint(10)),
         ...asField(4, LENGTH_DELIMITED, asString(enc.encode(entity_b64))),
         ...asField(10, VARINT, asVarint(1))
     ]);
-    console.log(topic_meta);
-
 
     const topic = new Uint8Array([
         ...asField(1, VARINT, asVarint(0)),
         ...asField(5, LENGTH_DELIMITED, asString(topic_meta))
     ]);
-    console.log(topic);
 
     return encodeBase64Nopad(topic);
 }
