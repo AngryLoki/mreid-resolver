@@ -95,6 +95,6 @@
 
 <style>
 	:global(body) {
-		background: #eee;
+		background: #f1f3f4;
 	}
 </style>
