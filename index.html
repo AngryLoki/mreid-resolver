@@ -2,33 +2,28 @@
 <html lang="en">
 
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width,initial-scale=1">
-
-	<title>MREID resolver</title>
-
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-	<link rel="stylesheet" href="build/bundle.css">
-	<link rel="search" type="application/opensearchdescription+xml" href="opensearch.xml" title="GitHub">
-
-	<link rel="icon" type="image/png" href="favicon.png">
-
-	<script defer src="build/bundle.js"></script>
+	<meta charset="utf-8" />
+	<link rel="icon" href="/mreid-resolver/favicon.png" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="search" type="application/opensearchdescription+xml" href="/mreid-resolver/opensearch.xml"
+		title="MREID resolver">
+	<meta http-equiv="content-security-policy" content="">
+	<link rel="modulepreload" href="/mreid-resolver/internal/immutable/start-7c122b6a.js">
+	<link rel="modulepreload" href="/mreid-resolver/internal/immutable/chunks/index-161070e3.js">
+	<link rel="modulepreload" href="/mreid-resolver/internal/immutable/chunks/singletons-eeeab8ce.js">
 </head>
 
-<body>
-	<main id="ie" class="container" style="display: none">
-		<div class="alert alert-danger mt-4" role="alert">
-			<h4 class="alert-heading">Your browser is not supported</h4>
-			Due to limited capabilities, Internet Explorer is not supported by Machine-Readable Entity IDs resolver.
-			Please use Mozilla Firefox, Google Chrome, Microsoft Edge or any other modern browser.
-		</div>
-	</main>
-	<script>
-		document.addEventListener("DOMContentLoaded", function (event) {
-			if (window.document.documentMode) {
-				document.getElementById("ie").style.display = "inherit";
-			}
+<body class="bg-gray-100">
+	
+		<script type="module" data-sveltekit-hydrate="45h">
+		import { start } from "/mreid-resolver/internal/immutable/start-7c122b6a.js";
+
+		start({
+			env: {},
+			hydrate: null,
+			paths: {"base":"/mreid-resolver","assets":"/mreid-resolver"},
+			target: document.querySelector('[data-sveltekit-hydrate="45h"]').parentNode,
+			trailing_slash: "always"
 		});
 	</script>
 </body>
