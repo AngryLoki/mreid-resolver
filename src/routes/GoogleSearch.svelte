@@ -23,18 +23,7 @@
 </script>
 
 <iframe
-    id="search-frame"
-    class="rounded"
+    class="rounded-sm h-full w-full border-0 min-h-[500px]"
     title="Search for {kgid} in Google"
     {src}
 />
-
-<style>
-    #search-frame {
-        height: 100%;
-        min-height: 500px;
-        width: 100%;
-        border-width: 0px;
-        margin-top: -10px;
-    }
-</style>

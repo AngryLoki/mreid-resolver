@@ -1,18 +1,9 @@
 <script type="ts">
-    import {
-        Input,
-        Label,
-        InputGroup,
-        Button,
-        InputGroupAddon,
-        Col,
-        Row,
-    } from "sveltestrap";
     import { stringifyUrl } from "query-string";
     import Select from "svelte-select";
 
-    import { allLanguages, allTypes } from "./common";
-    import type { SearchOptions } from "./common";
+    import { allLanguages, allTypes } from "./kgapi";
+    import type { SearchOptions } from "./search";
 
     export let searchOptions: SearchOptions;
 
@@ -21,7 +12,7 @@
         const kgmid_re =
             "^/m/0[0-9a-z_]{2,6}|/m/01[0123][0-9a-z_]{5}|/g/1[0-9a-np-z][0-9a-np-z_]{6,8}$";
         if (q.match(kgmid_re)) {
-            window.location.assign("#" + q);
+            window.location.hash = "#" + q;
             return;
         }
 
@@ -40,7 +31,7 @@
         }
 
         let req = stringifyUrl({ url: "/search", query: qs });
-        window.location.assign("#" + req);
+        window.location.hash = "#" + req;
     }
 
     const search_languages_dropdown_items = allLanguages
@@ -55,47 +46,56 @@
 </script>
 
 <form on:submit|preventDefault={search}>
-    <Row class="mt-3 form-row">
-        <div class="col-sm-auto logo">
+    <div class="flex flex-wrap mt-4">
+        <div class="flex-none logo">
             <!-- svelte-ignore a11y-invalid-attribute -->
-            <a href={window.location.href.split("#")[0]}
-                ><span class="logo-mreid">MREID</span><br /><span
+            <a href="#">
+                <span class="logo-mreid">MREID</span><br /><span
                     class="logo-resolver">resolver</span
-                ></a
-            >
+                >
+            </a>
         </div>
-        <Col>
-            <InputGroup>
-                <Input
+        <div class="relative flex-grow max-w-full flex-1 pl-4">
+            <div class="relative flex items-stretch w-full">
+                <input
+                    class="block appearance-none w-full py-1.5 px-3 text-base leading-normal bg-white text-gray-800 border border-gray-200 border-r-0 rounded-l
+                    focus:outline-none focus:ring focus:ring-blue-600/40"
                     bind:value={searchOptions.query}
                     placeholder="Search..."
                 />
-                <InputGroupAddon addonType="append">
-                    <Button
-                        type="submit"
-                        color="primary"
-                        disabled={!searchOptions.query}
-                    >🔍</Button>
-                </InputGroupAddon>
-            </InputGroup>
-        </Col>
-    </Row>
-    <Row class="my-2 px-3 form-row list-inline">
-        <div class="col-md-auto list-inline-item form-check form-check-inline">
-            <Label check size="sm">
-                <Input
+                <button
+                    class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded-r py-1 px-3 leading-normal no-underline 
+                    bg-blue-600 text-white hover:bg-blue-600
+                    focus:outline-none focus:ring focus:ring-blue-600/40
+                    disabled:opacity-60"
+                    type="submit"
+                    disabled={!searchOptions.query}
+                >
+                    🔍
+                </button>
+            </div>
+        </div>
+    </div>
+    <div
+        class="my-2 md:mx-1 md:px-3 flex flex-wrap gap-2 md:gap-4 items-center"
+    >
+        <div class="col-md-auto form-check form-check-inline">
+            <label class="text-gray-700 py-1 mb-0 text-sm">
+                <input
+                    class="mr-1"
                     type="checkbox"
                     bind:checked={searchOptions.withWikipedia}
                 />With Wikipedia
-            </Label>
+            </label>
         </div>
-        <div class="col-md-auto list-inline-item form-check form-check-inline">
-            <Label check size="sm">
-                <Input
+        <div class="col-md-auto form-check form-check-inline text-sm">
+            <label class="text-gray-700 py-1 mb-0 leading-normal">
+                <input
+                    class="mr-1"
                     type="checkbox"
                     bind:checked={searchOptions.withWikidata}
                 />With Wikidata
-            </Label>
+            </label>
         </div>
         <div class="col-md-auto list-inline-item dropdown-select">
             <Select
@@ -107,7 +107,7 @@
                 placeholder="Any language"
                 listPlacement="bottom"
                 items={search_languages_dropdown_items}
-                bind:selectedValue={searchOptions.languages}
+                bind:value={searchOptions.languages}
             />
         </div>
         <div class="col-md-auto list-inline-item dropdown-select">
@@ -120,10 +120,10 @@
                 placeholder="Any type"
                 listPlacement="bottom"
                 items={allTypes}
-                bind:selectedValue={searchOptions.types}
+                bind:value={searchOptions.types}
             />
         </div>
-    </Row>
+    </div>
 </form>
 
 <style>
