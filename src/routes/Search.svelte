@@ -1,4 +1,4 @@
-<script type="ts">
+<script lang="ts">
     import CopyClipboard from "./CopyClipboard.svelte";
     import Footer from "./Footer.svelte";
     import Spinner from "./Spinner.svelte";
@@ -57,6 +57,7 @@
                     <a
                         href={quickStatementsLink(newStatements)}
                         target="_blank"
+                        rel="noreferrer"
                         title="Open in QuickStatements"
                     >
                         {newStatements.length}
@@ -94,6 +95,7 @@
                             item.id
                         }&hl=${item.name?.lang || "en"}&gl=US`}
                         target="_blank"
+                        rel="noreferrer"
                     >
                         🔍
                     </a>
@@ -103,6 +105,7 @@
                             title="The official website URL of the entity"
                             href={item.url}
                             target="_blank"
+                            rel="noreferrer"
                         >
                             🌐
                         </a>

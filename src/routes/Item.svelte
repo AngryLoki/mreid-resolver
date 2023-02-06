@@ -48,7 +48,11 @@
                 class="relative flex-grow max-w-full flex-1 sm:flex-grow sm:flex-1"
             >
                 {#if content?.image}
-                    <a href={content.image.url} target="_blank">
+                    <a
+                        href={content.image.url}
+                        target="_blank"
+                        rel="noreferrer"
+                    >
                         <img
                             src={content.image.src}
                             alt={kgid}
@@ -79,6 +83,7 @@
                             <li class="inline-block">
                                 <a
                                     target="_blank"
+                                    rel="noreferrer"
                                     href={"https://www.google.com/search?kgmid=" +
                                         kgid +
                                         "&hl=en&gl=US"}>US</a
@@ -87,6 +92,7 @@
                             <li class="inline-block">
                                 <a
                                     target="_blank"
+                                    rel="noreferrer"
                                     href={"https://www.google.com/search?kgmid=" +
                                         kgid +
                                         "&hl=en&gl=IN"}>IN</a
@@ -95,6 +101,7 @@
                             <li class="inline-block">
                                 <a
                                     target="_blank"
+                                    rel="noreferrer"
                                     href={"https://www.google.com/search?kgmid=" +
                                         kgid +
                                         "&hl=en&gl=ID"}>ID</a
@@ -103,6 +110,7 @@
                             <li class="inline-block">
                                 <a
                                     target="_blank"
+                                    rel="noreferrer"
                                     href={"https://www.google.com/search?kgmid=" +
                                         kgid +
                                         "&hl=en&gl=KR"}>KR</a
@@ -117,13 +125,18 @@
                     <div class="mt-2 pl-4 w-2/3">
                         <ul class="space-x-1">
                             <li class="inline-block">
-                                <a target="_blank" href={gTrendsLink(kgid)}>
+                                <a
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    href={gTrendsLink(kgid)}
+                                >
                                     Worldwide
                                 </a>
                             </li>
                             <li class="inline-block">
                                 <a
                                     target="_blank"
+                                    rel="noreferrer"
                                     href={gTrendsLink(kgid, "US")}
                                 >
                                     US
@@ -138,7 +151,11 @@
                     <div class="mt-2 pl-4 w-2/3">
                         <ul class="space-x-1">
                             <li class="inline-block">
-                                <a target="_blank" href={gNewsLink(kgid, "en")}>
+                                <a
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    href={gNewsLink(kgid, "en")}
+                                >
                                     English
                                 </a>
                             </li>
@@ -155,6 +172,7 @@
                                     <li class="inline-block">
                                         <a
                                             target="_blank"
+                                            rel="noreferrer"
                                             href={"https://schema.org/" + type}
                                         >
                                             {type}
@@ -170,7 +188,11 @@
                             Official website:
                         </div>
                         <div class="mt-2 pl-4 w-2/3">
-                            <a target="_blank" href={content.url}>
+                            <a
+                                target="_blank"
+                                rel="noreferrer"
+                                href={content.url}
+                            >
                                 {content.url}
                             </a>
                         </div>
@@ -196,6 +218,7 @@
                 No data returned from
                 <a
                     target="_blank"
+                    rel="noreferrer"
                     href="https://developers.google.com/knowledge-graph/reference/rest/v1"
                 >
                     entities.search
@@ -203,6 +226,7 @@
                 method. Some data might be available in
                 <a
                     target="_blank"
+                    rel="noreferrer"
                     href={"https://www.google.com/search?kgmid=" +
                         kgid +
                         "&hl=en"}>Google</a
@@ -220,6 +244,7 @@
                             <td class="border-t p-1 align-top border-zinc-200">
                                 <a
                                     target="_blank"
+                                    rel="noreferrer"
                                     class:font-bold={lang == "en"}
                                     href={"https://www.google.com/search?kgmid=" +
                                         kgid +

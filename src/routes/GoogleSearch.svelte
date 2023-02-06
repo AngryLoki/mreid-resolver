@@ -1,10 +1,10 @@
 <script lang="ts">
-    import { stringifyUrl } from "query-string";
+    import queryString from "query-string";
 
     export let kgid: string;
     export let main_lang: string;
 
-    $: src = stringifyUrl({
+    $: src = queryString.stringifyUrl({
         url: "https://www.google.com/search",
         query: {
             prvw: "AP1HcD1TvBAuAZZqq5dYyslxOHow",

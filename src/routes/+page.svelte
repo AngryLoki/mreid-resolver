@@ -1,7 +1,7 @@
 <script lang="ts">
 	import "../app.css";
 
-	import { parseUrl } from "query-string";
+	import queryString from "query-string";
 	import { onMount } from "svelte";
 
 	import Item from "./Item.svelte";
@@ -22,7 +22,7 @@
 	};
 
 	const updatePath = (hash: string) => {
-		const { url, query } = parseUrl(hash.slice(1));
+		const { url, query } = queryString.parseUrl(hash.slice(1));
 
 		const kgmid_re = "^/m/0[0-9a-z_]{1,9}|/g/1[0-9a-z_]{1,9}$";
 

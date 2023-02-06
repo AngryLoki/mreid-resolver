@@ -1,6 +1,7 @@
-<script type="ts">
-    import { stringifyUrl } from "query-string";
+<script lang="ts">
+    import queryString from "query-string";
     import Select from "svelte-select";
+    import { parseTopicId } from "./google-news";
 
     import { allLanguages, allTypes } from "./kgapi";
     import type { SearchOptions } from "./search";
@@ -8,7 +9,14 @@
     export let searchOptions: SearchOptions;
 
     function search() {
-        const q = searchOptions.query;
+        let q = searchOptions.query;
+
+        const maybeTopic = parseTopicId(q);
+
+        if (maybeTopic) {
+            q = maybeTopic;
+        }
+
         const kgmid_re =
             "^/m/0[0-9a-z_]{2,6}|/m/01[0123][0-9a-z_]{5}|/g/1[0-9a-np-z][0-9a-np-z_]{6,8}$";
         if (q.match(kgmid_re)) {
@@ -30,11 +38,11 @@
             qs.type = searchOptions.types.map((el) => el.value);
         }
 
-        let req = stringifyUrl({ url: "/search", query: qs });
+        let req = queryString.stringifyUrl({ url: "/search", query: qs });
         window.location.hash = "#" + req;
     }
 
-    const search_languages_dropdown_items = allLanguages
+    const searchLanguagesDropdownItems = allLanguages
         .sort((a, b) => {
             if (a.name > b.name) return 1;
             if (a.name < b.name) return -1;
@@ -57,11 +65,17 @@
         </div>
         <div class="relative flex-grow max-w-full flex-1 pl-4">
             <div class="relative flex items-stretch w-full">
+                <!-- svelte-ignore a11y-autofocus -->
                 <input
                     class="block appearance-none w-full py-1.5 px-3 text-base leading-normal bg-white text-gray-800 border border-gray-200 border-r-0 rounded-l
                     focus:outline-none focus:ring focus:ring-blue-600/40"
                     bind:value={searchOptions.query}
                     placeholder="Search..."
+                    autocapitalize="off"
+                    autocomplete="off"
+                    autocorrect="off"
+                    spellcheck="false"
+                    autofocus
                 />
                 <button
                     class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded-r py-1 px-3 leading-normal no-underline 
@@ -100,25 +114,21 @@
         <div class="col-md-auto list-inline-item dropdown-select">
             <Select
                 showChevron={true}
-                showIndicator={true}
-                isClearable={false}
-                isMulti={true}
-                containerClasses="form-control form-control-sm"
+                clearable={false}
+                multiple={true}
+                class="form-control form-control-sm"
                 placeholder="Any language"
-                listPlacement="bottom"
-                items={search_languages_dropdown_items}
+                items={searchLanguagesDropdownItems}
                 bind:value={searchOptions.languages}
             />
         </div>
         <div class="col-md-auto list-inline-item dropdown-select">
             <Select
                 showChevron={true}
-                showIndicator={true}
-                isClearable={false}
-                isMulti={true}
-                containerClasses="form-control form-control-sm"
+                clearable={false}
+                multiple={true}
+                class="form-control form-control-sm"
                 placeholder="Any type"
-                listPlacement="bottom"
                 items={allTypes}
                 bind:value={searchOptions.types}
             />
@@ -128,21 +138,14 @@
 
 <style>
     .dropdown-select {
-        --multiItemHeight: 23px;
-        --multiItemMargin: 3px 5px 0 0;
-        --multiItemPadding: 0 6px 0 8px;
-
-        --multiClearTop: 6px;
-        --multiClearWidth: 12px;
-        --multiClearHeight: 12px;
-
+        --multi-select-input-margin: 0;
         --height: 29px;
-        --indicatorTop: 2px;
-        --indicatorRight: 4px;
+        --chevron-height: 29px;
         --border: 1px solid #ced4da;
-        --borderRadius: 15px;
-        --multiSelectPadding: 0 30px 0 3px;
-        --inputLeft: 9px;
+        --border-radius: 4px;
+        --multi-select-padding: 0 0 0 6px;
+        --multi-item-height: 23px;
+        --border: 1px solid rgb(229, 231, 235);
     }
 
     .form-check {

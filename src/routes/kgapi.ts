@@ -168,7 +168,7 @@ export const allTypes = [
 ];
 
 const cleanup = (line: string) => {
-	if (!line || !line.includes('&')) {
+	if (!line?.includes('&')) {
 		return line;
 	}
 
